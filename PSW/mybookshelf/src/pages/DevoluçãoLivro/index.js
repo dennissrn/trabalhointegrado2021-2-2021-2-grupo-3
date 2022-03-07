@@ -7,10 +7,12 @@ import { useNavigate } from "react-router-dom";
 import { enviarMensagem } from "../../store/slices/chatSlice";
 import rino from "../../img/rino.jpg";
 import axios from 'axios';
+import { ComprarLivro }  from '../../components/ComprarLivro'
 
 
 export default function DevoluçãoLivro() {
     const livroAlugado = useSelector(state => state.devolucao)
+    const token = useSelector(state => state.login.token)
     const [formValues, setFormValues] = useState({})
     const navigate = useNavigate()
 
@@ -35,15 +37,17 @@ export default function DevoluçãoLivro() {
             console.log(error)
         })
         const mensagem = {
-            destinatarioID: "teste1",
-            remetenteID: "teste2",
-            hora: Date.now(),
+            destinatarioID: livroAlugado._id,
             msg: "Olá " + livroAlugado.proprietario + ", poderíamos marcar a devolução do "
                 +livroAlugado.titulo+" para o dia: " + data.dataDevolução + "?",
             img:rino 
         }
         dispatch(enviarMensagem(mensagem))
-        axios.post('http://localhost:3000/Chat/enviarMsg', mensagem)
+        axios.post('http://localhost:3000/Chat/enviarMsg', mensagem, {
+            headers: {
+                'Authorization': 'Bearer '+ token,
+              }
+        })
         navigate('/Chat') ;
     }
     const dispatch= useDispatch()
@@ -81,6 +85,7 @@ export default function DevoluçãoLivro() {
                         <input type="submit" value="registrar" id="btn-submit"/>
                     </div>
                 </form>
+                <ComprarLivro livro={livroAlugado} />
             </div>
             
         </div>
