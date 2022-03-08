@@ -18,7 +18,6 @@ export default function () {
         const data = Object.fromEntries(formData)
         const temp = Object.assign(data)
        
-        
         axios.post('http://localhost:3000/livros/cadastro', formData, {
             headers: {
               'Content-Type': 'multipart/form-data',
